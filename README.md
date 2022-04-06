@@ -6,7 +6,7 @@ This API is documented in **OpenAPI format** and is based on the
 [Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io) team.
 
 # Documentation
-Full API documentation can be referenced [here](https://editor.swagger.io/?url=)
+Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/cartoncaps/master/openapi.yaml)
 
 # Installation and testing
 Testing servers stubs and client SDKs have been generated using [Swagger Codegen](http)
