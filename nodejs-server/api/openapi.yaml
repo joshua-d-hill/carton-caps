@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: Carton Caps Referral API
+  description: "# Introduction\nThis API allows Carton Caps users to refer friends\
+    \ to install the CC app on their mobile device, and utilizes deferred deep links\
+    \ to customize the installation experience for the referred user.\n\n# OpenAPI\
+    \ Specification\nThis API is documented in **OpenAPI format** and is based on\
+    \ the\n[Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io)\
+    \ team.\n\n# Documentation\nFull API documentation can be referenced [here](https://editor.swagger.io/?url=)\n\
+    \n# Installation and testing\nTesting servers stubs and client SDKs have been\
+    \ generated using [Swagger Codegen](http)\n\n# Skills Challenge Questions\nQ:\
+    \ How will existing users create new referrals using their existing referral code?\n\
+    A: The CC app would POST to the /referrals endpoint with data matching the referral\
+    \ schema (see below).\n\nQ: How will the app generate referral links for the share\
+    \ feature?\nA: The app would make a request to the third-party vendor for deferred\
+    \ deep link support.  This link would be included in the POST to the /referrals\
+    \ endpoint.\n\nQ: How will existing users check the status of their referrals?\n\
+    A: The app would make a GET request to the /referrals endpoint with a filter on\
+    \ the user's referrer ID.\n\nQ: How will the app know where to direct new users\
+    \ after they install the app via a referral?\nA: The deferred deep link provided\
+    \ by the third-party vendor would direct new users to the \"You've Been Invited\"\
+    \ gate page after they have installed the Carton Caps application.\n\nQ: Since\
+    \ users may eventually earn rewards for referrals, should we take extra steps\
+    \ to mitigate abuse?\nA: This might be addressed in three ways, depending on client\
+    \ preference and in escalating severity: \n- generate a new referral code (for\
+    \ example, if a user posted their code on a discount-sharing website)\n- disable\
+    \ the \"share\" feature for the offending user\n- disable the app credentials\
+    \ for the offending user\n"
+  termsOfService: https://livefront.com/terms/
+  contact:
+    name: Joshua Hill
+    url: https://github.com/joshua-d-hill/carton-caps-referral-api/
+    email: joshua.d.hill@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Code and additional information about this API
+  url: https://github.com/joshua-d-hill/carton-caps-referral-api/
+servers:
+- url: http://localhost:8049
+  description: Mock web service for API testing
+security:
+- BasicAuth: []
+tags:
+- name: referral
+  description: Update or delete a single referral; requires referral ID.
+- name: referrals
+  description: Fetch all referrals in system or create a new one.
+paths:
+  /referrals:
+    get:
+      tags:
+      - referrals
+      description: List all referrals
+      operationId: getReferrals
+      parameters:
+      - name: limit
+        in: query
+        description: Limits the number of referrals per page
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Specify the page number of the referral to be displayed
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK - Successfully fetched referrals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/referral'
+                x-content-type: application/json
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+      x-swagger-router-controller: Referrals
+    post:
+      tags:
+      - referrals
+      description: Generate a new referral
+      operationId: createReferral
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/referral'
+        required: true
+      responses:
+        "201":
+          description: OK - New referral created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/referral'
+      x-swagger-router-controller: Referrals
+  /referrals/{referralId}:
+    get:
+      tags:
+      - referral
+      description: "Fetch a referral by id including its referee, status, link, and\
+        \ method"
+      operationId: getReferral
+      parameters:
+      - name: referralId
+        in: path
+        description: ID of a referral to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Referral retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/referral'
+        "400":
+          description: Invalid referral ID
+      x-swagger-router-controller: Referral
+    post:
+      tags:
+      - referral
+      description: Updates a referral in system
+      operationId: updateReferral
+      parameters:
+      - name: referralId
+        in: path
+        description: ID of referral to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/referrals_referralId_body'
+      responses:
+        "400":
+          description: Invalid referral ID
+      x-swagger-router-controller: Referral
+    delete:
+      tags:
+      - referral
+      description: Deletes a referral from the system
+      operationId: deleteReferral
+      parameters:
+      - name: referralId
+        in: path
+        description: ID of referral to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "400":
+          description: Invalid referral ID
+      x-swagger-router-controller: Referral
+components:
+  schemas:
+    referral:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+          example: "123"
+        referee:
+          type: string
+          description: ID of referred user
+          example: "123"
+        referer:
+          type: string
+          description: ID of referring user
+          example: "123"
+        status:
+          type: string
+          description: "Status of referral - Sent, Received, Complete"
+          example: Complete
+        link:
+          type: string
+          description: The deferred deep link used by the referee to install the app
+            and view the 'You've Been Invited' gate screen
+          example: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
+        method:
+          type: string
+          description: "Method used to create referral - text, email, share"
+          example: text
+      example:
+        referer: "123"
+        method: text
+        link: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
+        id: "123"
+        referee: "123"
+        status: Complete
+    inline_response_400:
+      type: object
+      properties:
+        message:
+          type: string
+    referrals_referralId_body:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Updated status of the referral
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
