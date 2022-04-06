@@ -11,7 +11,7 @@ To run the mock API service:
 The service will be available at http://localhost:8080
 
 # OpenAPI Specification
-This API is documented in **OpenAPI format** and is based on the
+This API is documented in **OpenAPI v3 format** and is based on the
 [Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io) team.
 
 # Documentation
