@@ -7,6 +7,7 @@ To run the mock API service:
   - nvm install node
   - cd nodejs-server
   - npm start
+  
 The service will be available at http://localhost:8080
 
 # OpenAPI Specification

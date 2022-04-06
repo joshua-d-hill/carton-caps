@@ -6,26 +6,26 @@ info:
     \ to customize the installation experience for the referred user.\n\n# OpenAPI\
     \ Specification\nThis API is documented in **OpenAPI format** and is based on\
     \ the\n[Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io)\
-    \ team.\n\n# Documentation\nFull API documentation can be referenced [here](https://editor.swagger.io/?url=)\n\
+    \ team.\n\n# Documentation\nFull API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/cartoncaps/master/openapi.yaml)\n\
     \n# Installation and testing\nTesting servers stubs and client SDKs have been\
-    \ generated using [Swagger Codegen](http)\n\n# Skills Challenge Questions\nQ:\
-    \ How will existing users create new referrals using their existing referral code?\n\
-    A: The CC app would POST to the /referrals endpoint with data matching the referral\
-    \ schema (see below).\n\nQ: How will the app generate referral links for the share\
-    \ feature?\nA: The app would make a request to the third-party vendor for deferred\
-    \ deep link support.  This link would be included in the POST to the /referrals\
-    \ endpoint.\n\nQ: How will existing users check the status of their referrals?\n\
-    A: The app would make a GET request to the /referrals endpoint with a filter on\
-    \ the user's referrer ID.\n\nQ: How will the app know where to direct new users\
-    \ after they install the app via a referral?\nA: The deferred deep link provided\
-    \ by the third-party vendor would direct new users to the \"You've Been Invited\"\
-    \ gate page after they have installed the Carton Caps application.\n\nQ: Since\
-    \ users may eventually earn rewards for referrals, should we take extra steps\
-    \ to mitigate abuse?\nA: This might be addressed in three ways, depending on client\
-    \ preference and in escalating severity: \n- generate a new referral code (for\
-    \ example, if a user posted their code on a discount-sharing website)\n- disable\
-    \ the \"share\" feature for the offending user\n- disable the app credentials\
-    \ for the offending user\n"
+    \ generated using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)\n\
+    \n# Skills Challenge Questions\nQ: How will existing users create new referrals\
+    \ using their existing referral code?\nA: The CC app would POST to the /referrals\
+    \ endpoint with data matching the referral schema (see below).\n\nQ: How will\
+    \ the app generate referral links for the share feature?\nA: The app would make\
+    \ a request to the third-party vendor for deferred deep link support.  This link\
+    \ would be included in the POST to the /referrals endpoint.\n\nQ: How will existing\
+    \ users check the status of their referrals?\nA: The app would make a GET request\
+    \ to the /referrals endpoint with a filter on the user's referrer ID.\n\nQ: How\
+    \ will the app know where to direct new users after they install the app via a\
+    \ referral?\nA: The deferred deep link provided by the third-party vendor would\
+    \ direct new users to the \"You've Been Invited\" gate page after they have installed\
+    \ the Carton Caps application.\n\nQ: Since users may eventually earn rewards for\
+    \ referrals, should we take extra steps to mitigate abuse?\nA: This might be addressed\
+    \ in three ways, depending on client preference and in escalating severity: \n\
+    - generate a new referral code (for example, if a user posted their code on a\
+    \ discount-sharing website)\n- disable the \"share\" feature for the offending\
+    \ user\n- disable the app credentials for the offending user\n"
   termsOfService: https://livefront.com/terms/
   contact:
     name: Joshua Hill
@@ -195,6 +195,10 @@ components:
           type: string
           description: ID of referring user
           example: "123"
+        code:
+          type: string
+          description: six-character referral code
+          example: XFCDOB
         status:
           type: string
           description: "Status of referral - Sent, Received, Complete"
@@ -210,6 +214,7 @@ components:
           example: text
       example:
         referer: "123"
+        code: XFCDOB
         method: text
         link: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
         id: "123"
