@@ -10,16 +10,14 @@ To run the mock API service:
   
 The service will be available at http://localhost:8080
 
+Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/cartoncaps/master/openapi.yaml).
+
 # OpenAPI Specification
 This API is documented in **OpenAPI v3 format** and is based on the
 [Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io) team.
 
-# Documentation
-Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/cartoncaps/master/openapi.yaml).
-
-# Installation and testing
-Testing servers stubs and client SDKs have been generated using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/).
-Node.js installation instructions can be found here: 
+# Mock Web Service
+The Node.js mock web service was generated using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/).
 
 # Skills Challenge Questions
 Q: How will existing users create new referrals using their existing referral code?
