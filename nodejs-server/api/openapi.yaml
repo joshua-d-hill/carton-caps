@@ -6,7 +6,7 @@ info:
     \ to customize the installation experience for the referred user.\n\n# OpenAPI\
     \ Specification\nThis API is documented in **OpenAPI format** and is based on\
     \ the\n[Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io)\
-    \ team.\n\n# Documentation\nFull API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/cartoncaps/master/openapi.yaml)\n\
+    \ team.\n\n# Documentation\nFull API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/carton-caps-referral-api/master/openapi.yaml)\n\
     \n# Installation and testing\nTesting servers stubs and client SDKs have been\
     \ generated using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)\n\
     \n# Skills Challenge Questions\nQ: How will existing users create new referrals\
