@@ -39,7 +39,7 @@ externalDocs:
   description: Code and additional information about this API
   url: https://github.com/joshua-d-hill/carton-caps-referral-api/
 servers:
-- url: http://localhost:8049
+- url: http://localhost:8080
   description: Mock web service for API testing
 security:
 - BasicAuth: []
