@@ -1,9 +1,58 @@
-{
-    "id": "1",
-    "referee": "1",
-    "referer": "1",
-    "code": "XFCDOB",
-    "status": "Complete",
-    "link": "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB",
-    "method": "text"
+{ 
+    "Referrals": [
+        {
+            "id": "1",
+            "referer": "10",
+            "referee": "11",
+            "code": "XFCDOB",
+            "status": "Sent",
+            "link": "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB",
+            "method": "text"
+        },
+        {
+            "id": "2",
+            "referer": "10",
+            "referee": "21",
+            "code": "XFCDOB",
+            "status": "Received",
+            "link": "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB",
+            "method": "email"
+        },
+        {
+            "id": "3",
+            "referer": "30",
+            "referee": "31",
+            "code": "MRKCVW",
+            "status": "Complete",
+            "link": "https://cartoncaps.link/abfilefa90p?referral_code=MRKCVW",
+            "method": "share"
+        },
+        {
+            "id": "4",
+            "referer": "40",
+            "referee": "41",
+            "code": "LJEODN",
+            "status": "Recieved",
+            "link": "https://cartoncaps.link/abfilefa90p?referral_code=LJEODN",
+            "method": "text"
+        },
+        {
+            "id": "5",
+            "referer": "50",
+            "referee": "51",
+            "code": "YGFVHG",
+            "status": "Complete",
+            "link": "https://cartoncaps.link/abfilefa90p?referral_code=YGFVHG",
+            "method": "email"
+        },
+        {
+            "id": "6",
+            "referer": "60",
+            "referee": "61",
+            "code": "WNQLRP",
+            "status": "Sent",
+            "link": "https://cartoncaps.link/abfilefa90p?referral_code=WNQLRP",
+            "method": "share"
+        }
+    ]
 }

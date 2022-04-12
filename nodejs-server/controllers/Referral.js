@@ -3,16 +3,6 @@
 var utils = require('../utils/writer.js');
 var Referral = require('../service/ReferralService');
 
-module.exports.deleteReferral = function deleteReferral (req, res, next, referralId) {
-  Referral.deleteReferral(referralId)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
-
 module.exports.getReferral = function getReferral (req, res, next, referralId) {
   Referral.getReferral(referralId)
     .then(function (response) {

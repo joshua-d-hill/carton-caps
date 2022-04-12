@@ -3,24 +3,24 @@ info:
   title: Carton Caps Referral API
   description: "# Introduction\nThis API allows Carton Caps users to refer friends\
     \ to install the CC app on their mobile device, and utilizes deferred deep links\
-    \ to customize the installation experience for the referred user.\n\n# OpenAPI\
-    \ Specification\nThis API is documented in **OpenAPI format** and is based on\
-    \ the\n[Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io)\
-    \ team.\n\n# Documentation\nFull API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/carton-caps-referral-api/master/openapi.yaml)\n\
-    \n# Installation and testing\nTesting servers stubs and client SDKs have been\
-    \ generated using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)\n\
-    \n# Skills Challenge Questions\nQ: How will existing users create new referrals\
+    \ to customize the installation experience for the referred user.\n# OpenAPI Specification\n\
+    This API is documented in **OpenAPI format** and is based on the\n[Petstore sample](https://petstore.swagger.io/)\
+    \ provided by the [swagger.io](https://swagger.io) team.     \n# Documentation\n\
+    Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/carton-caps-referral-api/master/openapi.yaml)\n\
+    # Installation and testing\nTesting servers stubs and client SDKs have been generated\
+    \ using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)\n\
+    # Skills Challenge Questions\nQ: How will existing users create new referrals\
     \ using their existing referral code?\nA: The CC app would POST to the /referrals\
-    \ endpoint with data matching the referral schema (see below).\n\nQ: How will\
-    \ the app generate referral links for the share feature?\nA: The app would make\
-    \ a request to the third-party vendor for deferred deep link support.  This link\
-    \ would be included in the POST to the /referrals endpoint.\n\nQ: How will existing\
+    \ endpoint with data matching the referral schema (see below).\nQ: How will the\
+    \ app generate referral links for the share feature?\nA: The app would make a\
+    \ request to the third-party vendor for deferred deep link support.  This link\
+    \ would be included in the POST to the /referrals endpoint.\nQ: How will existing\
     \ users check the status of their referrals?\nA: The app would make a GET request\
-    \ to the /referrals endpoint with a filter on the user's referrer ID.\n\nQ: How\
+    \ to the /referrals endpoint with a filter on the user's referrer ID.\nQ: How\
     \ will the app know where to direct new users after they install the app via a\
     \ referral?\nA: The deferred deep link provided by the third-party vendor would\
     \ direct new users to the \"You've Been Invited\" gate page after they have installed\
-    \ the Carton Caps application.\n\nQ: Since users may eventually earn rewards for\
+    \ the Carton Caps application.\nQ: Since users may eventually earn rewards for\
     \ referrals, should we take extra steps to mitigate abuse?\nA: This might be addressed\
     \ in three ways, depending on client preference and in escalating severity: \n\
     - generate a new referral code (for example, if a user posted their code on a\
@@ -41,8 +41,6 @@ externalDocs:
 servers:
 - url: http://localhost:8080
   description: Mock web service for API testing
-security:
-- BasicAuth: []
 tags:
 - name: referral
   description: Update or delete a single referral; requires referral ID.
@@ -159,25 +157,6 @@ paths:
         "400":
           description: Invalid referral ID
       x-swagger-router-controller: Referral
-    delete:
-      tags:
-      - referral
-      description: Deletes a referral from the system
-      operationId: deleteReferral
-      parameters:
-      - name: referralId
-        in: path
-        description: ID of referral to delete
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "400":
-          description: Invalid referral ID
-      x-swagger-router-controller: Referral
 components:
   schemas:
     referral:
@@ -186,23 +165,31 @@ components:
         id:
           type: string
           description: id
-          example: "123"
+          example: "1"
         referee:
           type: string
           description: ID of referred user
-          example: "123"
+          example: "11"
         referer:
           type: string
           description: ID of referring user
-          example: "123"
+          example: "10"
         code:
           type: string
           description: six-character referral code
           example: XFCDOB
         status:
           type: string
-          description: "Status of referral - Sent, Received, Complete"
+          description: |
+            Status of referral:
+             * `Sent` - Referer has referred a user
+             * `Received` - Referee has received the referral but not yet installed the app
+             * `Complete` - Referee has installed the app and resolved the deferred deep link
           example: Complete
+          enum:
+          - Sent
+          - Received
+          - Complete
         link:
           type: string
           description: The deferred deep link used by the referee to install the app
@@ -210,15 +197,17 @@ components:
           example: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
         method:
           type: string
-          description: "Method used to create referral - text, email, share"
-          example: text
+          description: "Method used to create referrals:  * `Text` - Referral was\
+            \ sent to a mobile number * `Email` - Referral was sent to an email address\
+            \ * `Share` - Referral was sent via system-provided share capabilities\n"
+          example: Text
       example:
-        referer: "123"
+        referer: "10"
         code: XFCDOB
         method: text
         link: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
-        id: "123"
-        referee: "123"
+        id: "1"
+        referee: "11"
         status: Complete
     inline_response_400:
       type: object
@@ -231,7 +220,3 @@ components:
         status:
           type: string
           description: Updated status of the referral
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic

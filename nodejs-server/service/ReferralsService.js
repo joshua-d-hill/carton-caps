@@ -11,11 +11,12 @@ exports.createReferral = function(body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "referer" : "123",
+  "referer" : "10",
+  "code" : "XFCDOB",
   "method" : "text",
   "link" : "https://cartoncaps.link/abfilefa90p?referral_code=referral_code",
-  "id" : "123",
-  "referee" : "123",
+  "id" : "1",
+  "referee" : "11",
   "status" : "Complete"
 };
     if (Object.keys(examples).length > 0) {
@@ -38,18 +39,20 @@ exports.getReferrals = function(limit,offset) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "referer" : "123",
+  "referer" : "10",
+  "code" : "XFCDOB",
   "method" : "text",
   "link" : "https://cartoncaps.link/abfilefa90p?referral_code=referral_code",
-  "id" : "123",
-  "referee" : "123",
+  "id" : "1",
+  "referee" : "11",
   "status" : "Complete"
 }, {
-  "referer" : "123",
+  "referer" : "10",
+  "code" : "XFCDOB",
   "method" : "text",
   "link" : "https://cartoncaps.link/abfilefa90p?referral_code=referral_code",
-  "id" : "123",
-  "referee" : "123",
+  "id" : "1",
+  "referee" : "11",
   "status" : "Complete"
 } ];
     if (Object.keys(examples).length > 0) {

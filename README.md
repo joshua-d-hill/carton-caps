@@ -2,6 +2,8 @@
 This API allows Carton Caps users to refer friends to install the CC app on their mobile device, and utilizes deferred deep links to customize the installation experience for the referred user.
 
 # TLDR
+Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/cartoncaps/master/openapi.yaml).
+
 To run the mock API service:
   - [Install Node.js](https://github.com/nvm-sh/nvm#installing-and-updating)
   - nvm install node
@@ -9,8 +11,6 @@ To run the mock API service:
   - npm start
   
 The service will be available at http://localhost:8080
-
-Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/cartoncaps/master/openapi.yaml).
 
 # OpenAPI Specification
 This API is documented in **OpenAPI v3 format** and is based on the
