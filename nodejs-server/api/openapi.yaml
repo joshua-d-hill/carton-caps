@@ -21,11 +21,13 @@ info:
     \ referral?\nA: The deferred deep link provided by the third-party vendor would\
     \ direct new users to the \"You've Been Invited\" gate page after they have installed\
     \ the Carton Caps application.\nQ: Since users may eventually earn rewards for\
-    \ referrals, should we take extra steps to mitigate abuse?\nA: This might be addressed\
-    \ in three ways, depending on client preference and in escalating severity: \n\
-    - generate a new referral code (for example, if a user posted their code on a\
-    \ discount-sharing website)\n- disable the \"share\" feature for the offending\
-    \ user\n- disable the app credentials for the offending user\n"
+    \ referrals, should we take extra steps to mitigate abuse?\nA: \n  Proactive:\
+    \ Rate limit POST requests to /referrals and monitor IP/email addresses for indications\
+    \ of self-referral, account-cycling, or broadcasting.\n  Reactive: Detected abuse\
+    \ might be addressed in three ways, depending on client preference and in escalating\
+    \ severity: \n   - generate a new referral code (for example, if a user posted\
+    \ their code on a discount-sharing website)\n   - disable the \"share\" feature\
+    \ for the offending user\n   - disable the app credentials for the offending user\n"
   termsOfService: https://livefront.com/terms/
   contact:
     name: Joshua Hill
@@ -34,7 +36,7 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 1.1.0
 externalDocs:
   description: Code and additional information about this API
   url: https://github.com/joshua-d-hill/carton-caps-referral-api/
@@ -42,10 +44,9 @@ servers:
 - url: http://localhost:8080
   description: Mock web service for API testing
 tags:
-- name: referral
-  description: Update or delete a single referral; requires referral ID.
 - name: referrals
-  description: Fetch all referrals in system or create a new one.
+  description: "GET - Fetch all referrals in system, or a single one by ID. POST -\
+    \ Create a new referral, or update an existing one by ID."
 paths:
   /referrals:
     get:
@@ -73,22 +74,6 @@ paths:
       responses:
         "200":
           description: OK - Successfully fetched referrals
-          headers:
-            Access-Control-Allow-Origin:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              style: simple
-              explode: false
-              schema:
-                type: string
           content:
             application/json:
               schema:
@@ -96,28 +81,42 @@ paths:
                 items:
                   $ref: '#/components/schemas/referral'
                 x-content-type: application/json
-        "400":
-          description: Invalid request
-          headers:
-            Access-Control-Allow-Origin:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              style: simple
-              explode: false
-              schema:
-                type: string
+        "204":
+          description: No Content
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_400'
+                $ref: '#/components/schemas/inline_response_204'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
       x-swagger-router-controller: Referrals
     post:
       tags:
@@ -133,31 +132,27 @@ paths:
       responses:
         "201":
           description: OK - New referral created
-          headers:
-            Access-Control-Allow-Origin:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              style: simple
-              explode: false
-              schema:
-                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/referral'
+        "400":
+          description: Invalid format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
       x-swagger-router-controller: Referrals
   /referrals/{referralId}:
     get:
       tags:
-      - referral
+      - referrals
       description: "Fetch a referral by id including its referer, referee, referer\
         \ code, link, status, and method"
       operationId: getReferral
@@ -174,48 +169,26 @@ paths:
       responses:
         "200":
           description: Referral retrieved
-          headers:
-            Access-Control-Allow-Origin:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              style: simple
-              explode: false
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              style: simple
-              explode: false
-              schema:
-                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/referral'
         "400":
           description: Invalid referral ID
-          headers:
-            Access-Control-Allow-Origin:
-              style: simple
-              explode: false
+          content:
+            application/json:
               schema:
-                type: string
-            Access-Control-Allow-Methods:
-              style: simple
-              explode: false
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
               schema:
-                type: string
-            Access-Control-Allow-Headers:
-              style: simple
-              explode: false
-              schema:
-                type: string
-      x-swagger-router-controller: Referral
+                $ref: '#/components/schemas/inline_response_204'
+      x-swagger-router-controller: Referrals
     post:
       tags:
-      - referral
+      - referrals
       description: Updates a referral in system
       operationId: updateReferral
       parameters:
@@ -234,25 +207,25 @@ paths:
             schema:
               $ref: '#/components/schemas/referrals_referralId_body'
       responses:
+        "204":
+          description: Referral updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
         "400":
           description: Invalid referral ID
-          headers:
-            Access-Control-Allow-Origin:
-              style: simple
-              explode: false
+          content:
+            application/json:
               schema:
-                type: string
-            Access-Control-Allow-Methods:
-              style: simple
-              explode: false
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
               schema:
-                type: string
-            Access-Control-Allow-Headers:
-              style: simple
-              explode: false
-              schema:
-                type: string
-      x-swagger-router-controller: Referral
+                $ref: '#/components/schemas/inline_response_204'
+      x-swagger-router-controller: Referrals
 components:
   schemas:
     referral:
@@ -260,30 +233,38 @@ components:
       properties:
         id:
           type: string
-          description: id
+          description: Unique identifier of the referral
+          nullable: false
           example: "1"
         referer:
           type: string
           description: ID of referring user
+          nullable: false
           example: "10"
         referee:
           type: string
           description: ID of referred user
+          nullable: false
           example: "11"
         code:
           type: string
           description: six-character referral code
+          nullable: false
           example: XFCDOB
         link:
           type: string
           description: The deferred deep link used by the referee to install the app
-            and view the 'You've Been Invited' gate screen
+            and view the "You've Been Invited" gate screen
+          nullable: false
           example: https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB
         method:
           type: string
-          description: "Method used to create referrals:  * `Text` - Referral was\
-            \ sent to a mobile number * `Email` - Referral was sent to an email address\
-            \ * `Share` - Referral was sent via system-provided share capabilities\n"
+          description: |
+            Method used to create referrals:
+             * `Text` - Referral was sent to a mobile number
+             * `Email` - Referral was sent to an email address
+             * `Share` - Referral was sent via system-provided share capabilities
+          nullable: false
           example: Text
           enum:
           - Text
@@ -296,6 +277,7 @@ components:
              * `Sent` - Referer has referred a user
              * `Received` - Referee has received the referral but not yet installed the app
              * `Complete` - Referee has installed the app and resolved the deferred deep link
+          nullable: false
           example: Complete
           enum:
           - Sent
@@ -350,11 +332,13 @@ components:
         link: https://cartoncaps.link/abfilefa90p?referral_code=WNQLRP
         status: Sent
         method: Share
-    inline_response_400:
+    inline_response_204:
       type: object
       properties:
         message:
           type: string
+      example:
+        message: message
     referrals_referralId_body:
       type: object
       properties:

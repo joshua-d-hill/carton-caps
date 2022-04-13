@@ -9,8 +9,11 @@ To run the mock API service:
   - nvm install node
   - cd nodejs-server
   - npm start
-  
+
 The service will be available at http://localhost:8080
+
+To run tests utilizing Mocha, Chai, and Supertest:
+ - npm test
 
 # OpenAPI Specification
 This API is documented in **OpenAPI v3 format** and is based on the
@@ -33,7 +36,9 @@ Q: How will the app know where to direct new users after they install the app vi
 A: The deferred deep link provided by the third-party vendor would direct new users to the "You've Been Invited" gate page after they have installed the Carton Caps application.
 
 Q: Since users may eventually earn rewards for referrals, should we take extra steps to mitigate abuse?
-A: This might be addressed in three ways, depending on client preference and in escalating severity: 
-- generate a new referral code (for example, if a user posted their code on a discount-sharing website)
-- disable the "share" feature for the offending user
-- disable the app credentials for the offending user
+A: 
+  **Proactive**: Rate limit POST requests to /referrals and monitor IP/email addresses for indications of self-referral, account-cycling, or broadcasting.
+  **Reactive**: Detected abuse might be addressed in three ways, depending on client preference and in escalating severity: 
+    - generate a new referral code (for example, if a user posted their code on a discount-sharing website)
+    - disable the "share" feature for the offending user
+    - disable the app credentials for the offending user

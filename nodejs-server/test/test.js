@@ -14,17 +14,17 @@ describe('POST /referrals', () => {
 });
 
 describe('GET /referrals', function() {
-    it('should fetch all referrals', function(done) {
+    it('should fetch all referrals', () => {
         request(app)
         .get('http://localhost:8080/referrals')
-        .expect(200, done);
+        .expect(200);
     });
 });
 
 describe('GET /referrals/1', function() {
-    it('should fetch a single referral with an id of 1', function(done) {
+    it('should fetch a single referral with an id of 1', () => {
         request(app)
         .get('http://localhost:8080/referrals/1')
-        .expect(200, done);
+        .expect(200);
     });
 });

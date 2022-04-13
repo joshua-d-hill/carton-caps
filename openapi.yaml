@@ -21,8 +21,9 @@ info:
       Q: How will the app know where to direct new users after they install the app via a referral?
       A: The deferred deep link provided by the third-party vendor would direct new users to the "You've Been Invited" gate page after they have installed the Carton Caps application.
       Q: Since users may eventually earn rewards for referrals, should we take extra steps to mitigate abuse?
-      A: Proactive: 
-         Reactive: this might be addressed in three ways, depending on client preference and in escalating severity: 
+      A: 
+        **Proactive**: Rate limit POST requests to /referrals and monitor IP/email addresses for indications of self-referral, account-cycling, or broadcasting.
+        **Reactive**: Detected abuse might be addressed in three ways, depending on client preference and in escalating severity: 
          - generate a new referral code (for example, if a user posted their code on a discount-sharing website)
          - disable the "share" feature for the offending user
          - disable the app credentials for the offending user
@@ -112,6 +113,13 @@ paths:
                     type: string
         "500":
           description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
     post: 
       operationId: createReferral
       description: Generate a new referral
@@ -141,6 +149,13 @@ paths:
                     type: string
         "500":
           description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
   /referrals/{referralId}:
     get:
       operationId: getReferral
@@ -164,8 +179,22 @@ paths:
                 $ref: "#/components/schemas/referral"
         "400":
           description: Invalid referral ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
         "500":
           description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
     post:
       tags: 
       - referrals
@@ -191,10 +220,31 @@ paths:
       responses:
         "204":
           description: Referral updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
         "400":
           description: Invalid referral ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
         "500":
           description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
 components:
   schemas:
     referral:
@@ -202,25 +252,30 @@ components:
       properties:
         id:
           type: string
-          description: id
+          description: Unique identifier of the referral
           example: "1"
+          nullable: false
         referer:
           type: string
           description: ID of referring user
           example: "10"
+          nullable: false
         referee:
           type: string
           description: ID of referred user
           example: "11"
+          nullable: false
         code:
           type: string
           description: six-character referral code
           example: "XFCDOB"
+          nullable: false
         link:
           type: string
           description: The deferred deep link used by the referee to install the app
             and view the "You've Been Invited" gate screen
           example: "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB"
+          nullable: false
         method:
           type: string
           enum: [Text, Email, Share]
@@ -230,6 +285,7 @@ components:
              * `Email` - Referral was sent to an email address
              * `Share` - Referral was sent via system-provided share capabilities
           example: Text
+          nullable: false
         status:
           type: string
           enum: [Sent, Received, Complete]
@@ -239,6 +295,7 @@ components:
              * `Received` - Referee has received the referral but not yet installed the app
              * `Complete` - Referee has installed the app and resolved the deferred deep link
           example: Complete
+          nullable: false
       example:
         - name: textSent
           id: "1"
