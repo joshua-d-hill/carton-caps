@@ -7,7 +7,7 @@
             "code": "XFCDOB",
             "status": "Sent",
             "link": "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB",
-            "method": "text"
+            "method": "Text"
         },
         {
             "id": "2",
@@ -16,7 +16,7 @@
             "code": "XFCDOB",
             "status": "Received",
             "link": "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB",
-            "method": "email"
+            "method": "Email"
         },
         {
             "id": "3",
@@ -25,7 +25,7 @@
             "code": "MRKCVW",
             "status": "Complete",
             "link": "https://cartoncaps.link/abfilefa90p?referral_code=MRKCVW",
-            "method": "share"
+            "method": "Share"
         },
         {
             "id": "4",
@@ -34,7 +34,7 @@
             "code": "LJEODN",
             "status": "Recieved",
             "link": "https://cartoncaps.link/abfilefa90p?referral_code=LJEODN",
-            "method": "text"
+            "method": "Text"
         },
         {
             "id": "5",
@@ -43,7 +43,7 @@
             "code": "YGFVHG",
             "status": "Complete",
             "link": "https://cartoncaps.link/abfilefa90p?referral_code=YGFVHG",
-            "method": "email"
+            "method": "Email"
         },
         {
             "id": "6",
@@ -52,7 +52,7 @@
             "code": "WNQLRP",
             "status": "Sent",
             "link": "https://cartoncaps.link/abfilefa90p?referral_code=WNQLRP",
-            "method": "share"
+            "method": "Share"
         }
     ]
 }
