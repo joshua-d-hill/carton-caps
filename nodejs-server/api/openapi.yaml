@@ -73,6 +73,22 @@ paths:
       responses:
         "200":
           description: OK - Successfully fetched referrals
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -82,6 +98,22 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid request
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -101,6 +133,22 @@ paths:
       responses:
         "201":
           description: OK - New referral created
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -110,8 +158,8 @@ paths:
     get:
       tags:
       - referral
-      description: "Fetch a referral by id including its referee, status, link, and\
-        \ method"
+      description: "Fetch a referral by id including its referer, referee, referer\
+        \ code, link, status, and method"
       operationId: getReferral
       parameters:
       - name: referralId
@@ -126,12 +174,44 @@ paths:
       responses:
         "200":
           description: Referral retrieved
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/referral'
         "400":
           description: Invalid referral ID
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
       x-swagger-router-controller: Referral
     post:
       tags:
@@ -156,6 +236,22 @@ paths:
       responses:
         "400":
           description: Invalid referral ID
+          headers:
+            Access-Control-Allow-Origin:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              style: simple
+              explode: false
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              style: simple
+              explode: false
+              schema:
+                type: string
       x-swagger-router-controller: Referral
 components:
   schemas:
@@ -166,18 +262,33 @@ components:
           type: string
           description: id
           example: "1"
-        referee:
-          type: string
-          description: ID of referred user
-          example: "11"
         referer:
           type: string
           description: ID of referring user
           example: "10"
+        referee:
+          type: string
+          description: ID of referred user
+          example: "11"
         code:
           type: string
           description: six-character referral code
           example: XFCDOB
+        link:
+          type: string
+          description: The deferred deep link used by the referee to install the app
+            and view the 'You've Been Invited' gate screen
+          example: https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB
+        method:
+          type: string
+          description: "Method used to create referrals:  * `Text` - Referral was\
+            \ sent to a mobile number * `Email` - Referral was sent to an email address\
+            \ * `Share` - Referral was sent via system-provided share capabilities\n"
+          example: Text
+          enum:
+          - Text
+          - Email
+          - Share
         status:
           type: string
           description: |
@@ -190,25 +301,55 @@ components:
           - Sent
           - Received
           - Complete
-        link:
-          type: string
-          description: The deferred deep link used by the referee to install the app
-            and view the 'You've Been Invited' gate screen
-          example: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
-        method:
-          type: string
-          description: "Method used to create referrals:  * `Text` - Referral was\
-            \ sent to a mobile number * `Email` - Referral was sent to an email address\
-            \ * `Share` - Referral was sent via system-provided share capabilities\n"
-          example: Text
       example:
-        referer: "10"
-        code: XFCDOB
-        method: text
-        link: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
+      - name: textSent
         id: "1"
+        referer: "10"
         referee: "11"
+        code: XFCDOB
+        link: https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB
+        method: text
+        status: Sent
+      - name: emailReceived
+        id: "2"
+        referer: "10"
+        referee: "21"
+        code: XFCDOB
+        link: https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB
+        status: Received
+        method: Email
+      - name: shareComplete
+        id: "3"
+        referer: "30"
+        referee: "31"
+        code: MRKCVW
+        link: https://cartoncaps.link/abfilefa90p?referral_code=MRKCVW
         status: Complete
+        method: Share
+      - name: textReceived
+        id: "4"
+        referer: "40"
+        referee: "41"
+        code: LJEODN
+        link: https://cartoncaps.link/abfilefa90p?referral_code=LJEODN
+        status: Received
+        method: Text
+      - name: emailComplete
+        id: "5"
+        referer: "50"
+        referee: "51"
+        code: YGFVHG
+        link: https://cartoncaps.link/abfilefa90p?referral_code=YGFVHG
+        status: Complete
+        method: Email
+      - name: shareSent
+        id: "6"
+        referer: "60"
+        referee: "61"
+        code: WNQLRP
+        link: https://cartoncaps.link/abfilefa90p?referral_code=WNQLRP
+        status: Sent
+        method: Share
     inline_response_400:
       type: object
       properties:

@@ -22,10 +22,10 @@ info:
       A: The deferred deep link provided by the third-party vendor would direct new users to the "You've Been Invited" gate page after they have installed the Carton Caps application.
       Q: Since users may eventually earn rewards for referrals, should we take extra steps to mitigate abuse?
       A: Proactive: 
-      Reactive: this might be addressed in three ways, depending on client preference and in escalating severity: 
-      - generate a new referral code (for example, if a user posted their code on a discount-sharing website)
-      - disable the "share" feature for the offending user
-      - disable the app credentials for the offending user
+         Reactive: this might be addressed in three ways, depending on client preference and in escalating severity: 
+         - generate a new referral code (for example, if a user posted their code on a discount-sharing website)
+         - disable the "share" feature for the offending user
+         - disable the app credentials for the offending user
   termsOfService: https://livefront.com/terms/
   contact:
     name: Joshua Hill
@@ -57,36 +57,16 @@ paths:
       tags:
         - referrals
       responses:
-        '200':
+        "200":
           description: OK - Successfully fetched referrals
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/referral'
-        '400':
-          description: Invalid request
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
+                  $ref: "#/components/schemas/referral"
+        "204":
+          description: No Content
           content:
             application/json:
               schema:
@@ -94,6 +74,44 @@ paths:
                 properties:
                   message:
                     type: string
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "500":
+          description: Server error
     post: 
       operationId: createReferral
       description: Generate a new referral
@@ -104,24 +122,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/referral'
+              $ref: "#/components/schemas/referral"
       responses:
-        '201':
+        "201":
           description: OK - New referral created
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/referral'         
+                $ref: "#/components/schemas/referral"
+        "400":
+          description: Invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "500":
+          description: Server error
   /referrals/{referralId}:
     get:
       operationId: getReferral
@@ -137,34 +156,16 @@ paths:
           type: integer
           format: int64
       responses:
-        '200':
+        "200":
           description: Referral retrieved
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/referral'
-        '400':
+                $ref: "#/components/schemas/referral"
+        "400":
           description: Invalid referral ID
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
+        "500":
+          description: Server error
     post:
       tags: 
       - referrals
@@ -178,19 +179,6 @@ paths:
           schema:
             type: integer
             format: int64
-      responses:
-        '400':
-          description: Invalid referral ID
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
       requestBody:
         content:
           application/json:
@@ -200,6 +188,13 @@ paths:
                 status:
                   description: Updated status of the referral
                   type: string
+      responses:
+        "204":
+          description: Referral updated successfully
+        "400":
+          description: Invalid referral ID
+        "500":
+          description: Server error
 components:
   schemas:
     referral:
@@ -224,7 +219,7 @@ components:
         link:
           type: string
           description: The deferred deep link used by the referee to install the app
-            and view the 'You've Been Invited' gate screen
+            and view the "You've Been Invited" gate screen
           example: "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB"
         method:
           type: string
