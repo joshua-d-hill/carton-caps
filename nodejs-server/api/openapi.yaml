@@ -3,29 +3,31 @@ info:
   title: Carton Caps Referral API
   description: "# Introduction\nThis API allows Carton Caps users to refer friends\
     \ to install the CC app on their mobile device, and utilizes deferred deep links\
-    \ to customize the installation experience for the referred user.\n\n# OpenAPI\
-    \ Specification\nThis API is documented in **OpenAPI format** and is based on\
-    \ the\n[Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io)\
-    \ team.\n\n# Documentation\nFull API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/carton-caps-referral-api/master/openapi.yaml)\n\
-    \n# Installation and testing\nTesting servers stubs and client SDKs have been\
-    \ generated using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)\n\
-    \n# Skills Challenge Questions\nQ: How will existing users create new referrals\
+    \ to customize the installation experience for the referred user.\n# OpenAPI Specification\n\
+    This API is documented in **OpenAPI format** and is based on the\n[Petstore sample](https://petstore.swagger.io/)\
+    \ provided by the [swagger.io](https://swagger.io) team.     \n# Documentation\n\
+    Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/carton-caps-referral-api/master/openapi.yaml)\n\
+    # Installation and testing\nTesting servers stubs and client SDKs have been generated\
+    \ using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)\n\
+    # Skills Challenge Questions\nQ: How will existing users create new referrals\
     \ using their existing referral code?\nA: The CC app would POST to the /referrals\
-    \ endpoint with data matching the referral schema (see below).\n\nQ: How will\
-    \ the app generate referral links for the share feature?\nA: The app would make\
-    \ a request to the third-party vendor for deferred deep link support.  This link\
-    \ would be included in the POST to the /referrals endpoint.\n\nQ: How will existing\
+    \ endpoint with data matching the referral schema (see below).\nQ: How will the\
+    \ app generate referral links for the share feature?\nA: The app would make a\
+    \ request to the third-party vendor for deferred deep link support.  This link\
+    \ would be included in the POST to the /referrals endpoint.\nQ: How will existing\
     \ users check the status of their referrals?\nA: The app would make a GET request\
-    \ to the /referrals endpoint with a filter on the user's referrer ID.\n\nQ: How\
+    \ to the /referrals endpoint with a filter on the user's referrer ID.\nQ: How\
     \ will the app know where to direct new users after they install the app via a\
     \ referral?\nA: The deferred deep link provided by the third-party vendor would\
     \ direct new users to the \"You've Been Invited\" gate page after they have installed\
-    \ the Carton Caps application.\n\nQ: Since users may eventually earn rewards for\
-    \ referrals, should we take extra steps to mitigate abuse?\nA: This might be addressed\
-    \ in three ways, depending on client preference and in escalating severity: \n\
-    - generate a new referral code (for example, if a user posted their code on a\
-    \ discount-sharing website)\n- disable the \"share\" feature for the offending\
-    \ user\n- disable the app credentials for the offending user\n"
+    \ the Carton Caps application.\nQ: Since users may eventually earn rewards for\
+    \ referrals, should we take extra steps to mitigate abuse?\nA: \n  Proactive:\
+    \ Rate limit POST requests to /referrals and monitor IP/email addresses for indications\
+    \ of self-referral, account-cycling, or broadcasting.\n  Reactive: Detected abuse\
+    \ might be addressed in three ways, depending on client preference and in escalating\
+    \ severity: \n   - generate a new referral code (for example, if a user posted\
+    \ their code on a discount-sharing website)\n   - disable the \"share\" feature\
+    \ for the offending user\n   - disable the app credentials for the offending user\n"
   termsOfService: https://livefront.com/terms/
   contact:
     name: Joshua Hill
@@ -34,20 +36,17 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 1.1.0
 externalDocs:
   description: Code and additional information about this API
   url: https://github.com/joshua-d-hill/carton-caps-referral-api/
 servers:
 - url: http://localhost:8080
   description: Mock web service for API testing
-security:
-- BasicAuth: []
 tags:
-- name: referral
-  description: Update or delete a single referral; requires referral ID.
 - name: referrals
-  description: Fetch all referrals in system or create a new one.
+  description: "GET - Fetch all referrals in system, or a single one by ID. POST -\
+    \ Create a new referral, or update an existing one by ID."
 paths:
   /referrals:
     get:
@@ -82,12 +81,42 @@ paths:
                 items:
                   $ref: '#/components/schemas/referral'
                 x-content-type: application/json
+        "204":
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
         "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_400'
+                $ref: '#/components/schemas/inline_response_204'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
       x-swagger-router-controller: Referrals
     post:
       tags:
@@ -107,13 +136,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/referral'
+        "400":
+          description: Invalid format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
       x-swagger-router-controller: Referrals
   /referrals/{referralId}:
     get:
       tags:
-      - referral
-      description: "Fetch a referral by id including its referee, status, link, and\
-        \ method"
+      - referrals
+      description: "Fetch a referral by id including its referer, referee, referer\
+        \ code, link, status, and method"
       operationId: getReferral
       parameters:
       - name: referralId
@@ -134,10 +175,20 @@ paths:
                 $ref: '#/components/schemas/referral'
         "400":
           description: Invalid referral ID
-      x-swagger-router-controller: Referral
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+      x-swagger-router-controller: Referrals
     post:
       tags:
-      - referral
+      - referrals
       description: Updates a referral in system
       operationId: updateReferral
       parameters:
@@ -156,28 +207,25 @@ paths:
             schema:
               $ref: '#/components/schemas/referrals_referralId_body'
       responses:
+        "204":
+          description: Referral updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
         "400":
           description: Invalid referral ID
-      x-swagger-router-controller: Referral
-    delete:
-      tags:
-      - referral
-      description: Deletes a referral from the system
-      operationId: deleteReferral
-      parameters:
-      - name: referralId
-        in: path
-        description: ID of referral to delete
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "400":
-          description: Invalid referral ID
-      x-swagger-router-controller: Referral
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_204'
+      x-swagger-router-controller: Referrals
 components:
   schemas:
     referral:
@@ -185,53 +233,115 @@ components:
       properties:
         id:
           type: string
-          description: id
-          example: "123"
-        referee:
-          type: string
-          description: ID of referred user
-          example: "123"
+          description: Unique identifier of the referral
+          nullable: false
+          example: "1"
         referer:
           type: string
           description: ID of referring user
-          example: "123"
+          nullable: false
+          example: "10"
+        referee:
+          type: string
+          description: ID of referred user
+          nullable: false
+          example: "11"
         code:
           type: string
           description: six-character referral code
+          nullable: false
           example: XFCDOB
-        status:
-          type: string
-          description: "Status of referral - Sent, Received, Complete"
-          example: Complete
         link:
           type: string
           description: The deferred deep link used by the referee to install the app
-            and view the 'You've Been Invited' gate screen
-          example: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
+            and view the "You've Been Invited" gate screen
+          nullable: false
+          example: https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB
         method:
           type: string
-          description: "Method used to create referral - text, email, share"
-          example: text
+          description: |
+            Method used to create referrals:
+             * `Text` - Referral was sent to a mobile number
+             * `Email` - Referral was sent to an email address
+             * `Share` - Referral was sent via system-provided share capabilities
+          nullable: false
+          example: Text
+          enum:
+          - Text
+          - Email
+          - Share
+        status:
+          type: string
+          description: |
+            Status of referral:
+             * `Sent` - Referer has referred a user
+             * `Received` - Referee has received the referral but not yet installed the app
+             * `Complete` - Referee has installed the app and resolved the deferred deep link
+          nullable: false
+          example: Complete
+          enum:
+          - Sent
+          - Received
+          - Complete
       example:
-        referer: "123"
+      - name: textSent
+        id: "1"
+        referer: "10"
+        referee: "11"
         code: XFCDOB
+        link: https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB
         method: text
-        link: https://cartoncaps.link/abfilefa90p?referral_code=referral_code
-        id: "123"
-        referee: "123"
+        status: Sent
+      - name: emailReceived
+        id: "2"
+        referer: "10"
+        referee: "21"
+        code: XFCDOB
+        link: https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB
+        status: Received
+        method: Email
+      - name: shareComplete
+        id: "3"
+        referer: "30"
+        referee: "31"
+        code: MRKCVW
+        link: https://cartoncaps.link/abfilefa90p?referral_code=MRKCVW
         status: Complete
-    inline_response_400:
+        method: Share
+      - name: textReceived
+        id: "4"
+        referer: "40"
+        referee: "41"
+        code: LJEODN
+        link: https://cartoncaps.link/abfilefa90p?referral_code=LJEODN
+        status: Received
+        method: Text
+      - name: emailComplete
+        id: "5"
+        referer: "50"
+        referee: "51"
+        code: YGFVHG
+        link: https://cartoncaps.link/abfilefa90p?referral_code=YGFVHG
+        status: Complete
+        method: Email
+      - name: shareSent
+        id: "6"
+        referer: "60"
+        referee: "61"
+        code: WNQLRP
+        link: https://cartoncaps.link/abfilefa90p?referral_code=WNQLRP
+        status: Sent
+        method: Share
+    inline_response_204:
       type: object
       properties:
         message:
           type: string
+      example:
+        message: message
     referrals_referralId_body:
       type: object
       properties:
         status:
           type: string
           description: Updated status of the referral
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic

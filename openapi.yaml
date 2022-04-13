@@ -4,36 +4,29 @@ info:
   description: |
       # Introduction
       This API allows Carton Caps users to refer friends to install the CC app on their mobile device, and utilizes deferred deep links to customize the installation experience for the referred user.
-
       # OpenAPI Specification
       This API is documented in **OpenAPI format** and is based on the
-      [Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io) team.
-      
+      [Petstore sample](https://petstore.swagger.io/) provided by the [swagger.io](https://swagger.io) team.     
       # Documentation
       Full API documentation can be referenced [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/joshua-d-hill/carton-caps-referral-api/master/openapi.yaml)
-  
       # Installation and testing
       Testing servers stubs and client SDKs have been generated using [Swagger Codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)
-      
       # Skills Challenge Questions
       Q: How will existing users create new referrals using their existing referral code?
       A: The CC app would POST to the /referrals endpoint with data matching the referral schema (see below).
-      
       Q: How will the app generate referral links for the share feature?
       A: The app would make a request to the third-party vendor for deferred deep link support.  This link would be included in the POST to the /referrals endpoint.
-      
       Q: How will existing users check the status of their referrals?
       A: The app would make a GET request to the /referrals endpoint with a filter on the user's referrer ID.
-      
       Q: How will the app know where to direct new users after they install the app via a referral?
       A: The deferred deep link provided by the third-party vendor would direct new users to the "You've Been Invited" gate page after they have installed the Carton Caps application.
-      
       Q: Since users may eventually earn rewards for referrals, should we take extra steps to mitigate abuse?
-      A: This might be addressed in three ways, depending on client preference and in escalating severity: 
-      - generate a new referral code (for example, if a user posted their code on a discount-sharing website)
-      - disable the "share" feature for the offending user
-      - disable the app credentials for the offending user
-      
+      A: 
+        **Proactive**: Rate limit POST requests to /referrals and monitor IP/email addresses for indications of self-referral, account-cycling, or broadcasting.
+        **Reactive**: Detected abuse might be addressed in three ways, depending on client preference and in escalating severity: 
+         - generate a new referral code (for example, if a user posted their code on a discount-sharing website)
+         - disable the "share" feature for the offending user
+         - disable the app credentials for the offending user
   termsOfService: https://livefront.com/terms/
   contact:
     name: Joshua Hill
@@ -42,11 +35,10 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 1.1.0
 servers:
   - url: http://localhost:8080
     description: Mock web service for API testing
-
 paths:
   /referrals:
     get:
@@ -66,15 +58,24 @@ paths:
       tags:
         - referrals
       responses:
-        '200':
+        "200":
           description: OK - Successfully fetched referrals
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/referral'
-        '400':
+                  $ref: "#/components/schemas/referral"
+        "204":
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
           description: Invalid request
           content:
             application/json:
@@ -82,6 +83,42 @@ paths:
                 type: object
                 properties:
                   message:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
                     type: string
     post: 
       operationId: createReferral
@@ -93,21 +130,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/referral'
+              $ref: "#/components/schemas/referral"
       responses:
-        '201':
+        "201":
           description: OK - New referral created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/referral'
-          
+                $ref: "#/components/schemas/referral"
+        "400":
+          description: Invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
   /referrals/{referralId}:
     get:
       operationId: getReferral
-      description: Fetch a referral by id including its referee, status, link, and method
+      description: Fetch a referral by id including its referer, referee, referer code, link, status, and method
       tags:
-      - referral
+      - referrals
       parameters:
       - name: referralId
         in: path
@@ -117,17 +171,33 @@ paths:
           type: integer
           format: int64
       responses:
-        '200':
+        "200":
           description: Referral retrieved
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/referral'
-        '400':
+                $ref: "#/components/schemas/referral"
+        "400":
           description: Invalid referral ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
     post:
       tags: 
-      - referral
+      - referrals
       description: Updates a referral in system
       operationId: updateReferral
       parameters:
@@ -138,9 +208,6 @@ paths:
           schema:
             type: integer
             format: int64
-      responses:
-        '400':
-          description: Invalid referral ID
       requestBody:
         content:
           application/json:
@@ -150,67 +217,139 @@ paths:
                 status:
                   description: Updated status of the referral
                   type: string
-    delete:
-      tags:
-        - referral
-      description: Deletes a referral from the system
-      operationId: deleteReferral
-      parameters:
-        - name: referralId
-          in: path
-          description:  ID of referral to delete
-          required: true
-          schema:
-            type: integer
-            format: int64
       responses:
-        '400':
+        "204":
+          description: Referral updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "400":
           description: Invalid referral ID
-        
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
 components:
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
   schemas:
     referral:
       type: object
       properties:
         id:
           type: string
-          description: id
-          example: '123'
-        referee:
-          type: string
-          description: ID of referred user
-          example: '123'
+          description: Unique identifier of the referral
+          example: "1"
+          nullable: false
         referer:
           type: string
           description: ID of referring user
-          example: '123'
+          example: "10"
+          nullable: false
+        referee:
+          type: string
+          description: ID of referred user
+          example: "11"
+          nullable: false
         code:
           type: string
           description: six-character referral code
-          example: 'XFCDOB'
-        status:
-          type: string
-          description: Status of referral - Sent, Received, Complete
-          example: 'Complete'
+          example: "XFCDOB"
+          nullable: false
         link:
           type: string
-          description: The deferred deep link used by the referee to install the app and view the 'You've Been Invited' gate screen
-          example: 'https://cartoncaps.link/abfilefa90p?referral_code=referral_code'
-        method: 
+          description: The deferred deep link used by the referee to install the app
+            and view the "You've Been Invited" gate screen
+          example: "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB"
+          nullable: false
+        method:
           type: string
-          description: Method used to create referral - text, email, share
-          example: 'text'
-security:
-  - BasicAuth: []
+          enum: [Text, Email, Share]
+          description: >
+            Method used to create referrals:
+             * `Text` - Referral was sent to a mobile number
+             * `Email` - Referral was sent to an email address
+             * `Share` - Referral was sent via system-provided share capabilities
+          example: Text
+          nullable: false
+        status:
+          type: string
+          enum: [Sent, Received, Complete]
+          description: >
+            Status of referral:
+             * `Sent` - Referer has referred a user
+             * `Received` - Referee has received the referral but not yet installed the app
+             * `Complete` - Referee has installed the app and resolved the deferred deep link
+          example: Complete
+          nullable: false
+      example:
+        - name: textSent
+          id: "1"
+          referer: "10"
+          referee: "11"
+          code: "XFCDOB"
+          link: "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB"
+          method: "text"
+          status: "Sent"
+        - name: emailReceived
+          id: "2"
+          referer: "10"
+          referee: "21"
+          code: "XFCDOB"
+          link: "https://cartoncaps.link/abfilefa90p?referral_code=XFCDOB"
+          status: "Received"
+          method: "Email"
+        - name: shareComplete
+          id: "3"
+          referer: "30"
+          referee: "31"
+          code: "MRKCVW"
+          link: "https://cartoncaps.link/abfilefa90p?referral_code=MRKCVW"
+          status: "Complete"
+          method: "Share"
+        - name: textReceived
+          id: "4"
+          referer: "40"
+          referee: "41"
+          code: "LJEODN"
+          link: "https://cartoncaps.link/abfilefa90p?referral_code=LJEODN"
+          status: "Received"
+          method: "Text"
+        - name: emailComplete
+          id: "5"
+          referer: "50"
+          referee: "51"
+          code: "YGFVHG"
+          link: "https://cartoncaps.link/abfilefa90p?referral_code=YGFVHG"
+          status: "Complete"
+          method: "Email"
+        - name: shareSent
+          id: "6"
+          referer: "60"
+          referee: "61"
+          code: "WNQLRP"
+          link: "https://cartoncaps.link/abfilefa90p?referral_code=WNQLRP"
+          status: "Sent"
+          method: "Share"
 tags:
-  - name: referral
-    description: Update or delete a single referral; requires referral ID.
   - name: referrals
-    description: Fetch all referrals in system or create a new one.
+    description: 
+      GET - Fetch all referrals in system, or a single one by ID.
+      POST - Create a new referral, or update an existing one by ID.
 externalDocs:
   description: Code and additional information about this API
   url: https://github.com/joshua-d-hill/carton-caps-referral-api/
